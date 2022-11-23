@@ -1,6 +1,13 @@
+"""
+Customer churn test churn_library.py 
+
+Author: Sohrab Sani
+Date: 2022-11-22
+"""
+
 import os
 import logging
-import churn_library_solution as cls
+import churn_library as cls
 
 logging.basicConfig(
     filename='./logs/test.log',
