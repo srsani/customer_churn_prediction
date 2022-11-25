@@ -6,9 +6,9 @@ Date: 2022-11-22
 """
 
 # import libraries
+import os
 import logging
 import joblib
-import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,6 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import plot_roc_curve, classification_report
+import constants as setting
 
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 
@@ -46,10 +47,10 @@ def import_data(pth):
         logging.info('SUCCESS: df size %s', df_input.shape)
         df_out = df_input.drop(
             ['Unnamed: 0', 'CLIENTNUM', 'Attrition_Flag'], axis=1)
+        return df_out
     except (FileNotFoundError, KeyError) as err:
         logging.error("ERROR:  %s", err)
         raise err
-    return df_out
 
 
 def perform_eda(df_input):
@@ -92,7 +93,8 @@ def encoder_helper(df_input, category_lst, response):
     input:
             df_input: pandas dataframe
             category_lst: list of columns that contain categorical features
-            response: string of response name [optional argument that could be used for naming variables or index y column]
+            response: string of response name [optional argument that
+            could be used for naming variables or index y column]
     output:
             df_input: pandas dataframe with new columns for
     '''
@@ -111,7 +113,8 @@ def perform_feature_engineering(df_input, response):
     '''
     input:
               df_input: pandas dataframe
-              response: string of response name [optional argument that could be used for naming variables or index y column]
+              response: string of response name [optional argument
+              that could be used for naming variables or index y column]
 
     output:
               X_train: X training data
@@ -119,11 +122,11 @@ def perform_feature_engineering(df_input, response):
               y_train: y training data
               y_test: y testing data
     '''
-    col_check = all(item in df_input.columns for item in KEEP_COLUMNS)
+    col_check = all(item in df_input.columns for item in setting.KEEP_COLUMNS)
     assert response in df_input.columns
     assert col_check
     y_df = df_input[response]
-    x_df = df_input[KEEP_COLUMNS]
+    x_df = df_input[setting.KEEP_COLUMNS]
     x_train, x_test, y_train, y_test = train_test_split(x_df,
                                                         y_df,
                                                         test_size=0.3,
@@ -291,24 +294,20 @@ def train_models(X_train, X_test, y_train, y_test):
 
 
 if __name__ == '__main__':
-    KEEP_COLUMNS = ['Customer_Age', 'Dependent_count', 'Months_on_book',
-                    'Total_Relationship_Count', 'Months_Inactive_12_mon',
-                    'Contacts_Count_12_mon', 'Credit_Limit', 'Total_Revolving_Bal',
-                    'Avg_Open_To_Buy', 'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
-                    'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1', 'Avg_Utilization_Ratio',
-                    'Gender_Churn', 'Education_Level_Churn', 'Marital_Status_Churn',
-                    'Income_Category_Churn', 'Card_Category_Churn']
     # import data
-    df = import_data(pth='./data/bank_data.csv')
+    df = import_data(pth=setting.DATA_PATH)
+
+    # perform eda
     perform_eda(df)
 
-    # categorical features
-    cat_columns = ['Gender', 'Education_Level',
-                   'Marital_Status', 'Income_Category', 'Card_Category']
-
+    # data transformation
     df = encoder_helper(df,
-                        category_lst=cat_columns,
+                        category_lst=setting.CAT_COLUMNS,
                         response='Churn')
+
+    # spit data from model training
     X_train, X_test, y_train_df, y_test = perform_feature_engineering(
         df, "Churn")
+
+    # model trining
     train_models(X_train, X_test, y_train_df, y_test)
