@@ -18,7 +18,7 @@ from churn_library import (import_data,
 import constants as setting
 
 logging.basicConfig(
-    filename='./logs/test.log',
+    filename='./logs/results.log',
     level=logging.INFO,
     filemode='a+',
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -134,4 +134,8 @@ def test_train_models(path):
 
 
 if __name__ == "__main__":
-    pass
+    test_import(setting.DATA_PATH)
+    test_eda(setting.DATA_PATH)
+    test_encoder_helper(setting.DATA_PATH)
+    test_perform_feature_engineering(setting.DATA_PATH)
+    test_train_models(setting.DATA_PATH)

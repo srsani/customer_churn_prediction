@@ -49,4 +49,4 @@ This project seeks to model a customer churn classifier  based on the available 
     2. EDA images added to `./images/eda/`
     3. model training results in `./images/results/`
     4. trained models dumped in 1`./results`
-- For testing with `pytest churn_script_logging_and_tests.py` and you should see 5 passed test
+- For testing with `python churn_script_logging_and_tests.py` and you should see 5 passed test

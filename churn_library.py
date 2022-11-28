@@ -69,18 +69,22 @@ def perform_eda(df_input):
         plt.figure(figsize=(20, 10))
         df_input[key].hist()
         plt.savefig(fname=f'./images/eda/{value}')
+        plt.close()
     # Marital_Status hist
     plt.figure(figsize=(20, 10))
     df_input.Marital_Status.value_counts('normalize').plot(kind='bar')
     plt.savefig(fname='./images/eda/marital_status_distribution.png')
+    plt.close()
     # Total_Trans_Ct hist
     plt.figure(figsize=(20, 10))
     sns.histplot(df_input['Total_Trans_Ct'], kde=True)
     plt.savefig(fname='./images/eda/total_transaction_distribution.png')
+    plt.close()
     # Heatmap
     plt.figure(figsize=(20, 10))
     sns.heatmap(df_input.corr(), annot=False, cmap='Dark2_r', linewidths=2)
     plt.savefig(fname='./images/eda/heatmap.png')
+    plt.close()
     logging.info('SUCCESS: EDA')
     return True
 
@@ -177,7 +181,7 @@ def classification_report_image(y_train,
              {'fontsize': 10}, fontproperties='monospace')
     plt.axis('off')
     plt.savefig(fname='./images/results/rf_results.png')
-
+    plt.close()
     # LogisticRegression
     plt.rc('figure', figsize=(6, 6))
     plt.text(0.01, 1.25,
@@ -194,6 +198,7 @@ def classification_report_image(y_train,
              {'fontsize': 10}, fontproperties='monospace')
     plt.axis('off')
     plt.savefig(fname='./images/results/logistic_results.png')
+    plt.close()
 
 
 def feature_importance_plot(model, X_data, output_pth):
@@ -227,6 +232,7 @@ def feature_importance_plot(model, X_data, output_pth):
         plt.xticks(range(X_data.shape[1]), names, rotation=90)
         file_path = f'{output_pth}/feature_importance_plot.jpg'
         plt.savefig(file_path, bbox_inches='tight')
+        plt.close()
         logging.info("SUCCESS: Feature importance added to %s",
                      file_path)
     except (AttributeError) as err:
@@ -279,7 +285,7 @@ def train_models(X_train, X_test, y_train, y_test):
     plot_roc_curve(cv_rfc.best_estimator_,
                    X_test, y_test, ax=axis, alpha=0.8)
     plt.savefig(fname='./images/results/roc_curve_result.png')
-
+    plt.close()
     classification_report_image(y_train,
                                 y_test,
                                 y_train_preds_lr,
